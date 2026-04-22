@@ -1,0 +1,7 @@
+namespace timer.Features.Auth.Dto;
+
+public class RegisterRequest
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+}

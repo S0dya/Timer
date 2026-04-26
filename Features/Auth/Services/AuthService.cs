@@ -71,6 +71,7 @@ public class AuthService : IAuthService
         {
             Id = Guid.NewGuid(),
             UserEmail = request.Email,
+            Username = "User",
             PasswordHash = passwordHash,
             UserRole = UserRole.User,
             CreatedAt = DateTime.UtcNow,

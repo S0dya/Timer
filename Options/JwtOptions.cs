@@ -1,4 +1,4 @@
-namespace timer.Features.Auth.Jwt;
+namespace timer.Options;
 
 public class JwtOptions
 {

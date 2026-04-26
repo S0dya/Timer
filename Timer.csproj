@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Session\Services\" />
+    <Folder Include="Features\Timer\Session\Dto\" />
+    <Folder Include="Features\Timer\Settings\Services\" />
   </ItemGroup>
 
 </Project>

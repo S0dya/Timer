@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
 
 namespace timer.Middlewares;
 
@@ -47,6 +48,11 @@ public class GlobalExceptionMiddleware
             {
                 _logger.LogInformation(ex, "Resource not found");
                 await HandleExceptionAsync(context, HttpStatusCode.NotFound, ex.Message);
+            }
+            catch (AuthenticationFailureException ex)
+            {
+                _logger.LogInformation(ex, "Auth Failed");
+                await HandleExceptionAsync(context, HttpStatusCode.Unauthorized, ex.Message);
             }
             catch (Exception ex)
             {

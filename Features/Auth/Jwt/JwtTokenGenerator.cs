@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using timer.Features.Auth.CurrentUser;
+using timer.Options;
 
 namespace timer.Features.Auth.Jwt;
 

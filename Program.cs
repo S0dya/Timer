@@ -6,7 +6,11 @@ using timer.Database;
 using timer.Features.Auth.CurrentUser;
 using timer.Features.Auth.Jwt;
 using timer.Features.Auth.Services;
+using timer.Features.Timer.Run.Services;
+using timer.Features.Timer.Session.Services;
+using timer.Features.Timer.Settings.Services;
 using timer.Middlewares;
+using timer.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +22,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<TimerSettingsOptions>(builder.Configuration.GetSection("TimerSettings"));
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IRunService, RunService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

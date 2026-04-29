@@ -9,4 +9,7 @@ public class TimerSettingsOptions
     public int MinAmount { get; set; } = default!;
     public int MaxDuration { get; set; } = default!;
     public int MaxAmount { get; set; } = default!;
+    public int SessionStopTimerDifferenceOffset { get; set; } = default!;
+
+    public int MaxRunsHistoryLimit { get; set; } = default!;
 }

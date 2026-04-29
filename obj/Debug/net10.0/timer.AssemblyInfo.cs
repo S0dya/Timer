@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("timer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2be607d78ef0f3387a71b3d6eb54d1ff3f75619")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d12f7df993cfbb99e6a0ec0f9ef23f553d1a5a10")]
 [assembly: System.Reflection.AssemblyProductAttribute("timer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("timer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

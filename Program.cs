@@ -6,8 +6,8 @@ using timer.Database;
 using timer.Features.Auth.CurrentUser;
 using timer.Features.Auth.Jwt;
 using timer.Features.Auth.Services;
+using timer.Features.Timer.ActiveRun.Services;
 using timer.Features.Timer.Run.Services;
-using timer.Features.Timer.Session.Services;
 using timer.Features.Timer.Settings.Services;
 using timer.Middlewares;
 using timer.Options;
@@ -27,9 +27,9 @@ builder.Services.Configure<TimerSettingsOptions>(builder.Configuration.GetSectio
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IRunService, RunService>();
-builder.Services.AddScoped<ISessionService, SessionService>();
-builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<IRunService, DbRunService>();
+builder.Services.AddScoped<ISettingsService, DbSettingsService>();
+builder.Services.AddScoped<IActiveRunService, DbActiveRunService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

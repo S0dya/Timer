@@ -1,25 +1,29 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using timer.Database;
+using timer.Features.Timer.ActiveRun.Services;
 using timer.Features.Timer.Settings.Domain;
 using timer.Features.Timer.Settings.Dto;
 using timer.Options;
 
 namespace timer.Features.Timer.Settings.Services;
 
-public class SettingsService : ISettingsService
+public class DbSettingsService : ISettingsService
 {
-    private readonly ILogger<SettingsService> _logger;
+    private readonly ILogger<DbSettingsService> _logger;
     private readonly AppDbContext _db;
     private readonly TimerSettingsOptions _options;
+    private readonly IActiveRunService _activeRunService;
 
-    public SettingsService(ILogger<SettingsService> logger,
+    public DbSettingsService(ILogger<DbSettingsService> logger,
         AppDbContext db,
-        IOptions<TimerSettingsOptions> options)
+        IOptions<TimerSettingsOptions> options,
+        IActiveRunService activeRunService)
     {
         _logger = logger;
         _db = db;
         _options = options.Value;
+        _activeRunService = activeRunService;
     }
 
     public async Task<SettingsResponse> GetTimerSettings(Guid userId)
@@ -45,6 +49,8 @@ public class SettingsService : ISettingsService
     
     public async Task<SettingsResponse> SetTimerSettings(Guid userId, SettingsRequest request)
     {
+        await _activeRunService.EnsureNoActiveSession(userId);
+        
         var settingEntity = await _db.TimerSettings.FirstOrDefaultAsync(setting => setting.UserId == userId);
 
         if (settingEntity == null)

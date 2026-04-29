@@ -1,9 +1,81 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using timer.Features.Auth.CurrentUser;
+using timer.Features.Timer.Run.Dto;
+using timer.Features.Timer.Run.Services;
 
 namespace timer.Features.Timer.Run;
 
 [ApiController]
 [Route("timer/run")]
+[Authorize]
 public class RunController : ControllerBase
 {
+    private readonly ICurrentUser _currentUser;
+    private readonly IRunService _runService;
+
+    public RunController(ICurrentUser currentUser,
+        IRunService runService)
+    {
+        _currentUser = currentUser;
+        _runService = runService;
+    }
+    
+    [HttpPost("start-session")]
+    public async Task<ActionResult<SessionStartResponse>> StartSession()
+    {
+        var response = await _runService.StartSession(_currentUser.UserId);
+        
+        return Ok(response);
+    }
+    
+    [HttpPost("finish-session")]
+    public async Task<ActionResult<SessionFinishedResponse>> FinishSession()
+    {
+        var response = await _runService.FinishSession(_currentUser.UserId);
+        
+        return Ok(response);
+    }
+    
+    [HttpPost("cancel-session")]
+    public async Task<ActionResult> CancelSession()
+    {
+        await _runService.CancelSession(_currentUser.UserId);
+
+        return Ok();
+    }
+    
+    [HttpPost("finish-run")]
+    public async Task<ActionResult<RunFinishResponse>> FinishRun([FromBody]RunFinishRequest request)
+    {
+        var response = await _runService.FinishRun(_currentUser.UserId, request);
+
+        return Ok(response);
+    }
+    
+    [HttpPost("cancel-run")]
+    public async Task<ActionResult> CancelRun()
+    {
+        await _runService.CancelRun(_currentUser.UserId);
+
+        return Ok();
+    }
+    
+    [HttpGet("get-current-run")]
+    public async Task<ActionResult<CurrentRunResponse>> GetCurrentRun()
+    {
+        var response = await _runService.GetCurrentRun(_currentUser.UserId);
+        
+        return Ok(response);
+    }
+    
+    [HttpGet("get-run-history")]
+    public async Task<ActionResult<List<RunHistoryResponse>>> GetRunHistory([FromBody]RunHistoryRequest request)
+    {
+        var responseList = await _runService.GetRunHistory(_currentUser.UserId, request);
+
+        if (responseList.Count == 0) return NoContent();
+        
+        return Ok(responseList);
+    }
 }

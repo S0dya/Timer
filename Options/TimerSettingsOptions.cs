@@ -2,14 +2,14 @@ namespace timer.Options;
 
 public class TimerSettingsOptions
 {
-    public int DefaultDuration { get; set; } = default!;
-    public int DefaultAmount { get; set; } = default!;
+    public int DefaultDuration { get; set; }
+    public int DefaultAmount { get; set; }
     
-    public int MinDuration { get; set; } = default!;
-    public int MinAmount { get; set; } = default!;
-    public int MaxDuration { get; set; } = default!;
-    public int MaxAmount { get; set; } = default!;
-    public int SessionStopTimerDifferenceOffset { get; set; } = default!;
+    public int MinDuration { get; set; }
+    public int MinAmount { get; set; }
+    public int MaxDuration { get; set; }
+    public int MaxAmount { get; set; }
+    public int SessionStopTimerDifferenceOffset { get; set; }
 
-    public int MaxRunsHistoryLimit { get; set; } = default!;
+    public int MaxRunsHistoryLimit { get; set; }
 }

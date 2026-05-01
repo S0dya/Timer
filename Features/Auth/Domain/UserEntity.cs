@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace timer.Features.Auth.Domain;
 
 public class UserEntity
 {
     public Guid Id { get; set; }
+    [MaxLength(100)]
     public string UserEmail { get; set; }
+    [MaxLength(50)]
     public string Username { get; set; }
     public string PasswordHash { get; set; }
     public UserRole UserRole { get; set; }

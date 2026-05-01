@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\C#\\Timer\\timer.csproj": {}
+    "D:\\Projects\\C#\\Timer\\Timer.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\C#\\Timer\\timer.csproj": {
+    "D:\\Projects\\C#\\Timer\\Timer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\C#\\Timer\\timer.csproj",
-        "projectName": "timer",
-        "projectPath": "D:\\Projects\\C#\\Timer\\timer.csproj",
+        "projectUniqueName": "D:\\Projects\\C#\\Timer\\Timer.csproj",
+        "projectName": "Timer",
+        "projectPath": "D:\\Projects\\C#\\Timer\\Timer.csproj",
         "packagesPath": "C:\\Users\\Sdnnp\\.nuget\\packages\\",
         "outputPath": "D:\\Projects\\C#\\Timer\\obj\\",
         "projectStyle": "PackageReference",

@@ -70,7 +70,7 @@ public class RunController : ControllerBase
     }
     
     [HttpGet("get-run-history")]
-    public async Task<ActionResult<List<RunHistoryResponse>>> GetRunHistory([FromBody]RunHistoryRequest request)
+    public async Task<ActionResult<List<RunHistoryResponse>>> GetRunHistory([FromQuery]RunHistoryRequest request)
     {
         var responseList = await _runService.GetRunHistory(_currentUser.UserId, request);
 

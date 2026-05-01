@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
+using timer.Features.Timer.Exceptions;
 
 namespace timer.Middlewares;
 
@@ -53,6 +54,11 @@ public class GlobalExceptionMiddleware
             {
                 _logger.LogInformation(ex, "Auth Failed");
                 await HandleExceptionAsync(context, HttpStatusCode.Unauthorized, ex.Message);
+            }
+            catch (BusinessException ex)
+            {
+                _logger.LogInformation(ex, "Business exception occurred");
+                await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
             }
             catch (Exception ex)
             {

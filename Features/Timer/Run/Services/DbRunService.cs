@@ -33,10 +33,14 @@ public class DbRunService : IRunService
     
     public async Task<SessionStartResponse> StartSession(Guid userId)
     {
+        _logger.LogInformation("Starting session. UserId: {UserId}", userId);
+        
         var currentRun = await _activeRunService.GetCurrentRun(userId);
 
         if (currentRun == null)
         {
+            _logger.LogInformation("No run found, creating new run");
+            
             currentRun = await CreateNewRun(userId);
             
             await _dbContext.RunEntities.AddAsync(currentRun);
@@ -49,6 +53,8 @@ public class DbRunService : IRunService
         
         currentRun.CurrentSessionStartTime = DateTime.UtcNow;
             
+        _logger.LogInformation("Session started at {RunStartTime}", currentRun.CurrentSessionStartTime);
+        
         await _dbContext.SaveChangesAsync();
 
         return new SessionStartResponse()
@@ -64,6 +70,8 @@ public class DbRunService : IRunService
 
     public async Task<SessionFinishedResponse> FinishSession(Guid userId)
     {
+        _logger.LogInformation("Finishing session. UserId: {UserId}", userId);
+        
         var currentRun = await GetRunOrThrow(userId);
         
         if (currentRun.CurrentSessionStartTime == null)
@@ -74,9 +82,11 @@ public class DbRunService : IRunService
         var elapsed = DateTime.UtcNow - currentRun.CurrentSessionStartTime.Value;
         var expected = TimeSpan.FromSeconds(currentRun.SessionDuration); 
         
+        _logger.LogInformation("Session elapsed time: {Elapsed}, expected session duration: {Expected}", elapsed, expected);
+        
         if (elapsed < expected - TimeSpan.FromSeconds(_timerOptions.SessionStopTimerDifferenceOffset))
         {
-            throw new ArgumentOutOfRangeException(nameof(expected), "Session duration is out of time difference offset");
+            throw new BusinessException("Session duration is out of time difference offset");
         }
         
         currentRun.CurrentSessionStartTime = null;
@@ -96,6 +106,8 @@ public class DbRunService : IRunService
     
     public async Task CancelSession(Guid userId)
     {
+        _logger.LogInformation("Cancelling session. UserId: {UserId}", userId);
+        
         var currentRun = await GetRunOrThrow(userId);
 
         if (currentRun.CurrentSessionStartTime == null)
@@ -110,15 +122,21 @@ public class DbRunService : IRunService
 
     public async Task<RunFinishResponse> FinishRun(Guid userId, RunFinishRequest request)
     {
+        _logger.LogInformation("Finishing run. UserId: {UserId}", userId);
+        
         var currentRun = await GetRunOrThrow(userId);
 
         if (currentRun.CurrentSessionStartTime != null)
         {
             throw new BusinessException("Active session currently running");
         }
+        if (currentRun.CompletedSessions == 0)
+        {
+            throw new BusinessException("Cannot finish empty run");
+        }
         
         currentRun.RunEndTime = DateTime.UtcNow;
-        currentRun.Description = request.RunDescription;
+        currentRun.Description = request.RunDescription == null ? "" : request.RunDescription.Trim();
         
         await _dbContext.SaveChangesAsync();
 
@@ -133,6 +151,8 @@ public class DbRunService : IRunService
     
     public async Task CancelRun(Guid userId)
     {
+        _logger.LogInformation("Cancelling run. UserId: {UserId}", userId);
+        
         var currentRun = await GetRunOrThrow(userId);
         
         currentRun.RunEndTime = DateTime.UtcNow;
@@ -145,6 +165,8 @@ public class DbRunService : IRunService
 
     public async Task<CurrentRunResponse> GetCurrentRun(Guid userId)
     {
+        _logger.LogInformation("Getting current run. UserId: {UserId}", userId);
+        
         var currentRun = await GetRunOrThrow(userId);
 
         return new CurrentRunResponse()
@@ -159,6 +181,8 @@ public class DbRunService : IRunService
 
     public async Task<List<RunHistoryResponse>> GetRunHistory(Guid userId, RunHistoryRequest request)
     {
+        _logger.LogInformation("Getting run history. UserId: {UserId}, Request's limit: {RunHistoryLimit}, Request's offset: {RunHistoryOffset}", userId, request.Limit, request.Offset);
+        
         if (request.Limit > _timerOptions.MaxRunsHistoryLimit)
         {
             request.Limit = _timerOptions.MaxRunsHistoryLimit;
@@ -167,7 +191,7 @@ public class DbRunService : IRunService
                 userId, request.Limit, _timerOptions.MaxRunsHistoryLimit);
         }
         else if (request.Limit <= 0) 
-            throw new ArgumentOutOfRangeException(nameof(request.Limit), "Limit must be greater than zero");
+            throw new BusinessException("Limit must be greater than zero");
         
         var runEntities = await _dbContext.RunEntities
             .AsNoTracking()

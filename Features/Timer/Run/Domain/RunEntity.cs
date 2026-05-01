@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace timer.Features.Timer.Run.Domain;
 
 public class RunEntity
@@ -13,6 +15,8 @@ public class RunEntity
     public int PlannedSessionsAmount { get; set; }
     public int SessionDuration { get; set; }
     
+    [Required]
+    [MaxLength(500)]
     public string? Description { get; set; }
     public bool IsCancelled { get; set; }
 }

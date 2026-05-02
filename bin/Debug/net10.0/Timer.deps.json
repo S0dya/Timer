@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "Timer/1.0.0": {
+      "timer/1.0.0": {
         "dependencies": {
           "BCrypt.Net-Next": "4.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.6",
@@ -17,7 +17,7 @@
           "Swashbuckle.AspNetCore": "10.1.7"
         },
         "runtime": {
-          "Timer.dll": {}
+          "timer.dll": {}
         }
       },
       "BCrypt.Net-Next/4.1.0": {
@@ -635,7 +635,7 @@
     }
   },
   "libraries": {
-    "Timer/1.0.0": {
+    "timer/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -28,7 +28,13 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<RunEntity>()
             .HasKey(run => run.Id);
+
+        modelBuilder.Entity<RunEntity>()
+            .HasIndex(run => run.UserId)
+            .HasFilter("\"RunEndTime\" IS NULL")
+            .IsUnique();
         
-        
+
+
     } 
 }

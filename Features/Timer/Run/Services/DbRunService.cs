@@ -44,6 +44,15 @@ public class DbRunService : IRunService
             currentRun = await CreateNewRun(userId);
             
             await _dbContext.RunEntities.AddAsync(currentRun);
+            
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new BusinessException("Active run already exists");
+            }
         }
 
         if (currentRun.CurrentSessionStartTime != null)

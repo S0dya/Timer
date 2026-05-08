@@ -113,7 +113,7 @@ public class DbRunService : IRunService
         };
     }
     
-    public async Task CancelSession(Guid userId)
+    public async Task<CancelSessionResponse> CancelSession(Guid userId)
     {
         _logger.LogInformation("Cancelling session. UserId: {UserId}", userId);
         
@@ -123,10 +123,18 @@ public class DbRunService : IRunService
         {
             throw new BusinessException("No active session to cancel");
         }
+
+        var response = new CancelSessionResponse()
+        {
+            StartedAt = currentRun.CurrentSessionStartTime.Value,
+            SessionProgressionSeconds = (int)(DateTime.UtcNow - currentRun.CurrentSessionStartTime.Value).TotalSeconds,
+        };
         
         currentRun.CurrentSessionStartTime = null;
         
         await _dbContext.SaveChangesAsync();
+
+        return response;
     }
 
     public async Task<RunFinishResponse> FinishRun(Guid userId, RunFinishRequest request)
@@ -158,7 +166,7 @@ public class DbRunService : IRunService
         };
     }
     
-    public async Task CancelRun(Guid userId)
+    public async Task<CancelRunResponse> CancelRun(Guid userId)
     {
         _logger.LogInformation("Cancelling run. UserId: {UserId}", userId);
         
@@ -168,8 +176,15 @@ public class DbRunService : IRunService
         currentRun.IsCancelled = true;
         
         await _dbContext.SaveChangesAsync();
-        
-        // return new RunCanceledResponse()
+
+        return new CancelRunResponse()
+        {
+            RunStartTime = currentRun.RunStartTime,
+            CancelledAt = currentRun.RunEndTime.Value,
+            CompletedSessions = currentRun.CompletedSessions,
+            PlannedSessionsAmount = currentRun.PlannedSessionsAmount,
+            SessionDuration = currentRun.SessionDuration,
+        };
     }
 
     public async Task<CurrentRunResponse> GetCurrentRun(Guid userId)

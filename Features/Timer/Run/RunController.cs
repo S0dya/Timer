@@ -38,11 +38,11 @@ public class RunController : ControllerBase
     }
     
     [HttpPost("cancel-session")]
-    public async Task<ActionResult> CancelSession()
+    public async Task<ActionResult<CancelSessionResponse>> CancelSession()
     {
-        await _runService.CancelSession(_currentUser.UserId);
+        var response = await _runService.CancelSession(_currentUser.UserId);
 
-        return Ok();
+        return Ok(response);
     }
     
     [HttpPost("finish-run")]
@@ -54,11 +54,11 @@ public class RunController : ControllerBase
     }
     
     [HttpPost("cancel-run")]
-    public async Task<ActionResult> CancelRun()
+    public async Task<ActionResult<CancelRunResponse>> CancelRun()
     {
-        await _runService.CancelRun(_currentUser.UserId);
+        var response = await _runService.CancelRun(_currentUser.UserId);
 
-        return Ok();
+        return Ok(response);
     }
     
     [HttpGet("get-current-run")]

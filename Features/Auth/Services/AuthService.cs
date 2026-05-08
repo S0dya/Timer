@@ -28,20 +28,20 @@ public class AuthService : IAuthService
     
     public async Task<AuthResponse> Login(LoginRequest request)
     {
-        _logger.LogInformation("Login attempt for email {Email}", request.Email);
+        _logger.LogInformation("Login attempt for username {Username}", request.Username);
 
         _passwordValidation.ValidatePassword(request.Password);
         
-        var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserEmail == request.Email);
+        var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserEmail == request.Username);
         
         if (existingUser == null)
         {
-            _logger.LogWarning("Login failed for email {Email}: user not found", request.Email);
+            _logger.LogWarning("Login failed for username {Username}: user not found", request.Username);
             throw new AuthenticationException("Invalid Credentials");
         }
         if (!BCrypt.Net.BCrypt.Verify(request.Password, existingUser.PasswordHash))
         {
-            _logger.LogWarning("Login failed for email {Email}: invalid password", request.Email);
+            _logger.LogWarning("Login failed for username {Username}: invalid password", request.Username);
             throw new AuthenticationException("Invalid Credentials");
         }
 
@@ -60,15 +60,15 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> Register(RegisterRequest request)
     {
-        _logger.LogInformation("Registration attempt for email {Email}", request.Email);
+        _logger.LogInformation("Registration attempt for username {Username}", request.Username);
 
         _passwordValidation.ValidatePassword(request.Password);
         
-        var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserEmail == request.Email);
+        var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.Username == request.Username);
 
         if (existingUser != null)
         {
-            _logger.LogWarning("Registration failed for email {Email}: user already exists", request.Email);
+            _logger.LogWarning("Registration failed for username {Username}: user already exists", request.Username);
             throw new AuthenticationException("User Already Exists");
         }
 
@@ -77,8 +77,8 @@ public class AuthService : IAuthService
         var newUser = new UserEntity()
         {
             Id = Guid.NewGuid(),
-            UserEmail = request.Email,
-            Username = "User",
+            UserEmail = "@" + request.Username,
+            Username = request.Username,
             PasswordHash = passwordHash,
             UserRole = UserRole.User,
             CreatedAt = DateTime.UtcNow,

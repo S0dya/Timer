@@ -32,7 +32,7 @@ public class AuthService : IAuthService
 
         _passwordValidation.ValidatePassword(request.Password);
         
-        var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.UserEmail == request.Username);
+        var existingUser = await _db.Users.FirstOrDefaultAsync(user => user.Username == request.Username);
         
         if (existingUser == null)
         {

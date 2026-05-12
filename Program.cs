@@ -66,7 +66,20 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAll"); //REMOVE LATER
 
 if (app.Environment.IsDevelopment())
 {

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AGDydqd0/gs=",
+  "dgSpecHash": "4N/hnhW5I+A=",
   "success": true,
-  "projectFilePath": "D:\\Projects\\C#\\Timer\\Timer.csproj",
+  "projectFilePath": "D:\\Projects\\C#\\Timer\\timer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Sdnnp\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\Sdnnp\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

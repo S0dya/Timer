@@ -51,7 +51,8 @@ public class DbRunService : IRunService
             }
             catch (DbUpdateException ex)
             {
-                throw new BusinessException("Active run already exists");
+                _logger.LogError(ex, "Failed creating run");
+                throw;
             }
         }
 
@@ -59,10 +60,10 @@ public class DbRunService : IRunService
         {
             throw new BusinessException("Active session currently running");
         }
-        
-        currentRun.CurrentSessionStartTime = DateTime.UtcNow;
             
-        _logger.LogInformation("Session started at {RunStartTime}", currentRun.CurrentSessionStartTime);
+        currentRun.CurrentSessionStartTime = DateTime.UtcNow;
+        
+        _logger.LogInformation("Session started at {RunStartTime}", currentRun.CurrentSessionStartTime); 
         
         await _dbContext.SaveChangesAsync();
 
@@ -187,11 +188,17 @@ public class DbRunService : IRunService
         };
     }
 
-    public async Task<CurrentRunResponse> GetCurrentRun(Guid userId)
+    public async Task<CurrentRunResponse?> GetCurrentRun(Guid userId)
     {
         _logger.LogInformation("Getting current run. UserId: {UserId}", userId);
         
-        var currentRun = await GetRunOrThrow(userId);
+        var currentRun = await _activeRunService.GetCurrentRun(userId);
+
+        if (currentRun == null)
+        {
+            _logger.LogInformation("No active run found");
+            return null;
+        }
 
         return new CurrentRunResponse()
         {
@@ -265,6 +272,7 @@ public class DbRunService : IRunService
             PlannedSessionsAmount = settings.SessionsAmount,
             
             IsCancelled = false,
+            Description = ""
         };
     }
 }

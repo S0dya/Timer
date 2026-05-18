@@ -9,6 +9,6 @@ public interface IRunService
     Task<CancelSessionResponse> CancelSession(Guid userId);
     Task<RunFinishResponse> FinishRun(Guid userId, RunFinishRequest request);
     Task<CancelRunResponse> CancelRun(Guid userId);
-    Task<CurrentRunResponse> GetCurrentRun(Guid userId);
+    Task<CurrentRunResponse?> GetCurrentRun(Guid userId);
     Task<List<RunHistoryResponse>> GetRunHistory(Guid userId, RunHistoryRequest request);
 }

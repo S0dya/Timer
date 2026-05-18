@@ -49,7 +49,7 @@ public class DbSettingsService : ISettingsService
     
     public async Task<SettingsResponse> SetTimerSettings(Guid userId, SettingsRequest request)
     {
-        await _activeRunService.EnsureNoActiveSession(userId);
+        // await _activeRunService.EnsureNoActiveSession(userId);
         
         var settingEntity = await _db.TimerSettings.FirstOrDefaultAsync(setting => setting.UserId == userId);
 

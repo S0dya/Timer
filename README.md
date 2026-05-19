@@ -371,22 +371,3 @@ Preventing multiple active runs from existing simultaneously.
 Preventing instant session completion while still supporting small timing offsets.
 
 ---
-
-# Learning Outcomes
-
-This project helped me transition from Unity-focused client development into backend and full-stack architecture.
-
-Main areas explored:
-
-* ASP.NET Core architecture
-* JWT authentication
-* database design
-* EF Core
-* API design
-* backend validation
-* synchronization flows
-* logging and debugging
-* service separation
-* cross-platform client/backend integration
-
----

@@ -26,12 +26,12 @@ The backend handles:
 
 # Tech Stack
 
-* **ASP.NET Core 10** - Web fram
-* **PostgreSQL** - Dat
+* **ASP.NET Core 10** 
+* **PostgreSQL** 
 * **Entity Framework Core** 
-* **JWT Authentication** - Token-based
-* **BCrypt** - Password ha
-* **Swagger** - API document
+* **JWT Authentication** 
+* **BCrypt** 
+* **Swagger** 
 
 ---
 

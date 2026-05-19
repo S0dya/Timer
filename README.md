@@ -1,12 +1,13 @@
-# Focus Timer Backend API
+# LockIn Backend API
 
 Backend API for a long-session productivity tracking application built for a Unity client.
 The project focuses on session consistency, run tracking, and cross-platform synchronization between desktop and mobile clients.
 
 Unlike traditional Pomodoro timers, this system is designed around uninterrupted focus sessions and flexible long-term tracking. Runs can last from a single session to multiple days depending on the user's workflow.
 
-The backend is designed to work with a Unity client application
+The backend is designed to work with a [Unity client application](https://github.com/S0dya/TimerApp)
 
+<img src="ReadmeSrc/LockInS.gif" width="25%"/>
 
 ---
 
@@ -50,6 +51,8 @@ The system avoids email verification to keep the registration flow lightweight w
 * protected endpoints
 * role support
 
+<img src="ReadmeSrc/Auth.png" width="25%"/>
+
 ---
 
 ## Runs & Sessions
@@ -80,6 +83,8 @@ Unlike traditional Pomodoro systems:
 * runs do not reset at midnight
 * runs can exceed planned sessions
 
+<img src="ReadmeSrc/Main.png" width="25%"/>
+
 ---
 
 ## Timer Settings
@@ -102,6 +107,8 @@ This prevents runtime manipulation of active sessions and keeps tracking data co
 * configurable limits
 * server-side validation
 * persistent user settings
+
+<img src="ReadmeSrc/Settings.png" width="25%"/>
 
 ---
 

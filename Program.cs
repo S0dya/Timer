@@ -15,6 +15,8 @@ using timer.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 // builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
@@ -76,8 +78,6 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
-
-builder.Configuration.AddEnvironmentVariables();
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
 

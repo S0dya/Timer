@@ -17,6 +17,9 @@ public class RunEntity
     
     [Required]
     [MaxLength(500)]
-    public string? Description { get; set; }
+    public string Description { get; set; } = "";
     public bool IsCancelled { get; set; }
+
+    [Timestamp] 
+    public byte[] Version { get; set; } = null!;
 }

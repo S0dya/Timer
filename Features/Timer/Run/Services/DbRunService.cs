@@ -84,25 +84,9 @@ public class DbRunService : IRunService
         
         var currentRun = await GetRunOrThrow(userId);
         
-        if (currentRun.CurrentSessionStartTime == null)
-        {
-            throw new BusinessException("No active session to finish");
-        }
-
-        var elapsed = DateTime.UtcNow - currentRun.CurrentSessionStartTime.Value;
-        var expected = TimeSpan.FromSeconds(currentRun.SessionDuration); 
+        if (currentRun.CurrentSessionStartTime == null) throw new BusinessException("No active session");
         
-        _logger.LogInformation("Session elapsed time: {Elapsed}, expected session duration: {Expected}", elapsed, expected);
-        
-        if (elapsed < expected - TimeSpan.FromSeconds(_timerOptions.SessionStopTimerDifferenceOffset))
-        {
-            throw new BusinessException("Session duration is out of time difference offset");
-        }
-        
-        currentRun.CurrentSessionStartTime = null;
-        currentRun.CompletedSessions++;
-
-        await _dbContext.SaveChangesAsync();
+        await CompleteExpiredSessionOrThrow(currentRun);
         
         return new SessionFinishedResponse()
         {
@@ -121,9 +105,10 @@ public class DbRunService : IRunService
         var currentRun = await GetRunOrThrow(userId);
 
         if (currentRun.CurrentSessionStartTime == null)
-        {
             throw new BusinessException("No active session to cancel");
-        }
+
+        if (IsSessionFinished(currentRun.CurrentSessionStartTime.Value, currentRun.SessionDuration))
+            throw new BusinessException("Session already finished");
 
         var response = new CancelSessionResponse()
         {
@@ -200,6 +185,8 @@ public class DbRunService : IRunService
             return null;
         }
 
+        await CompleteExpiredSessionOrThrow(currentRun);
+
         return new CurrentRunResponse()
         {
             CompletedSessions = currentRun.CompletedSessions,
@@ -274,5 +261,36 @@ public class DbRunService : IRunService
             IsCancelled = false,
             Description = ""
         };
+    }
+
+    private async Task CompleteExpiredSessionOrThrow(RunEntity runEntity)
+    {
+        if (runEntity.CurrentSessionStartTime == null) return;
+        if (!IsSessionFinished(runEntity.CurrentSessionStartTime.Value, runEntity.SessionDuration))
+        {
+            _logger.LogInformation("Session is not finished");
+            return;
+        }
+        
+        _logger.LogInformation("Session is finished, completing");
+        
+        runEntity.CurrentSessionStartTime = null;
+        runEntity.CompletedSessions++;
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            _logger.LogWarning(ex, "Session already synchronized");
+        }
+    }
+    private bool IsSessionFinished(DateTime startTime, int sessionDuration)
+    {
+        var elapsed = DateTime.UtcNow - startTime;
+        var expected = TimeSpan.FromSeconds(sessionDuration);
+
+        return elapsed >= expected - TimeSpan.FromSeconds(_timerOptions.SessionStopTimerDifferenceOffset);
     }
 }

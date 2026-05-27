@@ -77,6 +77,8 @@ A user:
 
 Submitted runs are stored in history.
 
+<img src="ReadmeSrc/RunHistory.gif" width="25%"/>
+
 Unlike traditional Pomodoro systems:
 
 * runs are not tied to a day

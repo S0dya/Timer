@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Timer.Infrastructure.DependencyInjection;
 using timer.Database;
+using Timer.Infrastructure.DependencyInjection.RateLimiting;
 using timer.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services
     .AddTimerServices(builder.Configuration)
     .AddAuth(builder.Configuration)
     .AddDatabase(builder.Configuration)
+    .AddRateLimiting(builder.Configuration)
     .TimerAddCors();
 
 builder.Logging.ClearProviders();

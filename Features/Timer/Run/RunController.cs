@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using timer.Features.Auth.CurrentUser;
 using timer.Features.Timer.Run.Dto;
 using timer.Features.Timer.Run.Services;
+using Timer.Infrastructure.DependencyInjection.RateLimiting;
 
 namespace timer.Features.Timer.Run;
 
@@ -21,6 +23,7 @@ public class RunController : ControllerBase
         _runService = runService;
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPost("start-session")]
     public async Task<ActionResult<SessionStartResponse>> StartSession()
     {
@@ -29,6 +32,7 @@ public class RunController : ControllerBase
         return Ok(response);
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPost("finish-session")]
     public async Task<ActionResult<SessionFinishedResponse>> FinishSession()
     {
@@ -37,6 +41,7 @@ public class RunController : ControllerBase
         return Ok(response);
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPost("cancel-session")]
     public async Task<ActionResult<CancelSessionResponse>> CancelSession()
     {
@@ -45,6 +50,7 @@ public class RunController : ControllerBase
         return Ok(response);
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPost("finish-run")]
     public async Task<ActionResult<RunFinishResponse>> FinishRun([FromBody]RunFinishRequest request)
     {
@@ -53,6 +59,7 @@ public class RunController : ControllerBase
         return Ok(response);
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPost("cancel-run")]
     public async Task<ActionResult<CancelRunResponse>> CancelRun()
     {
@@ -61,6 +68,7 @@ public class RunController : ControllerBase
         return Ok(response);
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Reads)]
     [HttpGet("get-current-run")]
     public async Task<ActionResult<CurrentRunResponse>> GetCurrentRun()
     {
@@ -69,6 +77,7 @@ public class RunController : ControllerBase
         return Ok(response);
     }
     
+    [EnableRateLimiting(RateLimitPolicies.History)]
     [HttpGet("get-run-history")]
     public async Task<ActionResult<List<RunHistoryResponse>>> GetRunHistory([FromQuery]RunHistoryRequest request)
     {

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using timer.Features.Auth.CurrentUser;
 using timer.Features.Timer.Settings.Dto;
 using timer.Features.Timer.Settings.Services;
+using Timer.Infrastructure.DependencyInjection.RateLimiting;
 
 namespace timer.Features.Timer.Settings;
 
@@ -21,6 +23,7 @@ public class SettingsController : ControllerBase
         _settingsService = settingsService;
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Reads)]
     [HttpGet]
     public async Task<ActionResult<SettingsResponse>> GetTimerSettings()
     {
@@ -31,6 +34,7 @@ public class SettingsController : ControllerBase
         return Ok (response);
     }
 
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPost]
     public async Task<ActionResult<SettingsResponse>> SetTimerSettings([FromBody] SettingsRequest request)
     {

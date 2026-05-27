@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using timer.Features.Auth.CurrentUser;
 using timer.Features.Auth.Dto;
 using timer.Features.Auth.Services;
+using Timer.Infrastructure.DependencyInjection.RateLimiting;
 
 namespace timer.Features.Auth;
 
@@ -21,6 +23,7 @@ public class AuthController : ControllerBase
         _currentUser = currentUser;
     }
 
+    [EnableRateLimiting(RateLimitPolicies.Auth)]
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login([FromBody]LoginRequest request)
     {
@@ -28,6 +31,7 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
     
+    [EnableRateLimiting(RateLimitPolicies.Auth)]
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponse>> Register([FromBody]RegisterRequest request)
     {
@@ -35,6 +39,7 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
 
+    [EnableRateLimiting(RateLimitPolicies.Reads)]
     [Authorize]
     [HttpGet("get-current-user")]
     public ActionResult<UserResponse> Me()

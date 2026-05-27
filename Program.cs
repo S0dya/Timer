@@ -1,17 +1,7 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using Timer.Infrastructure.DependencyInjection;
 using timer.Database;
-using timer.Features.Auth.CurrentUser;
-using timer.Features.Auth.Jwt;
-using timer.Features.Auth.Services;
-using timer.Features.Auth.Validation;
-using timer.Features.Timer.ActiveRun.Services;
-using timer.Features.Timer.Run.Services;
-using timer.Features.Timer.Settings.Services;
 using timer.Middlewares;
-using timer.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,65 +9,16 @@ builder.Configuration.AddEnvironmentVariables();
 
 // builder.Services.AddOpenApi();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
-builder.Services.Configure<TimerSettingsOptions>(builder.Configuration.GetSection("TimerSettings"));
-
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddScoped<ICurrentUser, CurrentUser>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IRunService, DbRunService>();
-builder.Services.AddScoped<ISettingsService, DbSettingsService>();
-builder.Services.AddScoped<IActiveRunService, DbActiveRunService>();
-builder.Services.AddScoped<IPasswordValidation, PasswordValidation>();
-
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var jwtOptions = builder.Configuration
-            .GetSection("Jwt")
-            .Get<JwtOptions>();
-
-        options.TokenValidationParameters = new()
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-
-            ValidIssuer = jwtOptions.Issuer,
-            ValidAudience = jwtOptions.Audience,
-            
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret)),
-        };
-    });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-});
-
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
-    builder.Configuration.GetConnectionString("DefaultConnection")));
+    .AddSwagger()
+    .AddHttpContextAccessor()
+    .AddTimerServices(builder.Configuration)
+    .AddAuth(builder.Configuration)
+    .AddDatabase(builder.Configuration)
+    .TimerAddCors();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
 
@@ -85,13 +26,12 @@ builder.WebHost.UseUrls($"http://*:{port}");
 
 var app = builder.Build();
 
-app.UseCors("AllowAll"); //REMOVE LATER
+app.TimerUseCors();
 
 if (app.Environment.IsDevelopment())
 {
     // app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(app.Environment);
 }
 
 if (!app.Environment.IsDevelopment())
